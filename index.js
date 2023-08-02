@@ -31,23 +31,35 @@ let mousePressed = false;
 const imgaeURL = 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg'
 
 let currentMode;
-modes = {
+const modes = {
     pan: 'pan',
+    draw: 'draw'
 }
 setBackground(imgaeURL, canvas);
 
-const togglePan = () => {
-    const panButton = document.getElementById('pan');
-    
-    // panButton.setAttribute("color", "red")
-    if (currentMode === modes.pan) {
-        panButton.style.backgroundColor = "";
-        currentMode = '';
+const toggleModes = (event, mode) => {
+    const b = document.querySelectorAll(".modes");
+    let clickedButtonId = event.target.id;
+    let clickedButton = document.getElementById(clickedButtonId);
+    console.log(b);
+    canvas.isDrawingMode = false;
+    canvas.renderAll();
+    currentMode = mode;
+
+    if (clickedButton.style.backgroundColor) {
+        // If the clicked button already has a background color, remove it
+        clickedButton.style.backgroundColor = "";
+        currentMode = ''
+        
     } else {
-        panButton.style.backgroundColor = "cyan";
-        currentMode = modes.pan;
+        b.forEach(button => {
+            button.style.backgroundColor = ""; // Reset background color for all buttons
+        });
+        // Otherwise, set the background color for the clicked button
+        clickedButton.style.backgroundColor = "cyan";
     }
-}
+};
+
 const setPanEvent = (canvas) => {
     canvas.on('mouse:move', (event) => {
         // console.log(event);
@@ -58,10 +70,15 @@ const setPanEvent = (canvas) => {
             const delta = new fabric.Point(mEvent.movementX, mEvent.movementY);
             canvas.relativePan(delta);
         }
+        if (mousePressed && currentMode === modes.draw) {
+            canvas.isDrawingMode = true;
+            canvas.renderAll();
+        }
     });
     
     canvas.on('mouse:up', (event) => {
         mousePressed = false;
+        canvas.setCursor('default');
     });
     
     canvas.on('mouse:down', (event) => {
