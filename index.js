@@ -37,28 +37,52 @@ const modes = {
 }
 setBackground(imgaeURL, canvas);
 
+
 const toggleModes = (event, mode) => {
     const b = document.querySelectorAll(".modes");
-    let clickedButtonId = event.target.id;
-    let clickedButton = document.getElementById(clickedButtonId);
-    console.log(b);
-    canvas.isDrawingMode = false;
-    canvas.renderAll();
     currentMode = mode;
 
+    let clickedButton = event.target;
     if (clickedButton.style.backgroundColor) {
         // If the clicked button already has a background color, remove it
+        // and turn off currentMode
+        console.log('Removed');
         clickedButton.style.backgroundColor = "";
         currentMode = ''
-        
     } else {
         b.forEach(button => {
-            button.style.backgroundColor = ""; // Reset background color for all buttons
+            // Make sure all the buttons are colorless
+            button.style.backgroundColor = "";
         });
-        // Otherwise, set the background color for the clicked button
+        // add color to only the clicked button
         clickedButton.style.backgroundColor = "cyan";
     }
+
+    // Additional configuration or actions based on the mode
+    switch (currentMode) {
+        case modes.pan:
+            // Perform pan-specific configuration or actions
+            setPanEvent(canvas);
+            console.log('PAN mode configuration');
+            break;
+        case modes.draw:
+            // Perform draw-specific configuration or actions
+            // canvas.freeDrawingBrush = new fabric.CircleBrush(canvas);
+            canvas.freeDrawingBrush = new fabric.SprayBrush(canvas);
+            canvas.freeDrawingBrush.color = 'red';
+            canvas.freeDrawingBrush.width = 20;
+            canvas.isDrawingMode = true;
+            canvas.renderAll();
+            console.log('DRAW mode configuration');
+            break;
+        default:
+            console.log('This is cM', currentMode)
+            // Default configuration or actions for other modes
+            canvas.isDrawingMode = false;
+            break;
+    }
 };
+
 
 const setPanEvent = (canvas) => {
     canvas.on('mouse:move', (event) => {
@@ -71,8 +95,7 @@ const setPanEvent = (canvas) => {
             canvas.relativePan(delta);
         }
         if (mousePressed && currentMode === modes.draw) {
-            canvas.isDrawingMode = true;
-            canvas.renderAll();
+            
         }
     });
     
@@ -90,6 +113,6 @@ const setPanEvent = (canvas) => {
     });
 
 }
-setPanEvent(canvas);
+
 
 canvas.renderAll();
