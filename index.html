@@ -9,10 +9,13 @@
 <body>
     <button id="pan"  class="modes" onclick="toggleModes(event, modes.pan)">Pan</button>
     <button id="draw" class="modes"  onclick="toggleModes(event, modes.draw)">Draw</button>
+    <button id="clear" class="modes"  onclick="clearCanvas(event)">Clear</button>
+    <input id="colorPicker" value="#000000"  onchange="setColorPicker(event)" data-jscolor="{}">
+    
     <canvas id="canvas">
 
     </canvas>
-
+<script src="./lib/jscolor-2.5.1/jscolor.js"></script>
 <script src="./lib/unpkg.com_fabric@5.3.0_dist_fabric.min.js"></script>
 <script src="index.js"></script>
 </body>

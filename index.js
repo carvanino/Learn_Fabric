@@ -25,10 +25,19 @@ const setBackground = (url, canvas) => {
     });
 };
 
+const setColorPicker = (event) => {
+    // const colorPicker = document.getElementById('colorPicker');
+    const colorPicker = event.target;
+    const currentColor = colorPicker.getAttribute('data-current-color');
+    // console.log(currentColor);
+    canvas.freeDrawingBrush.color = currentColor;
+}
 
 const canvas = initCanvas('canvas');
 let mousePressed = false;
 const imgaeURL = 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg'
+
+let color = '#000000';
 
 let currentMode;
 const modes = {
@@ -67,9 +76,10 @@ const toggleModes = (event, mode) => {
             break;
         case modes.draw:
             // Perform draw-specific configuration or actions
-            // canvas.freeDrawingBrush = new fabric.CircleBrush(canvas);
-            canvas.freeDrawingBrush = new fabric.SprayBrush(canvas);
-            canvas.freeDrawingBrush.color = 'red';
+            canvas.freeDrawingBrush = new fabric.CircleBrush(canvas);
+            // canvas.freeDrawingBrush = new fabric.SprayBrush(canvas);
+            // console.log('Canvas color = ', color);
+            canvas.freeDrawingBrush.color = color;
             canvas.freeDrawingBrush.width = 20;
             canvas.isDrawingMode = true;
             canvas.renderAll();
@@ -114,5 +124,12 @@ const setPanEvent = (canvas) => {
 
 }
 
+const clearCanvas = (event) => {
+    canvas.getObjects().forEach((obj) => {
+        if (obj !== canvas.backgroundImage) {
+            canvas.remove(obj)
+        }
+    })
+}
 
 canvas.renderAll();
