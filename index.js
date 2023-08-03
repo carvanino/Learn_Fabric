@@ -30,7 +30,28 @@ const setColorPicker = (event) => {
     const colorPicker = event.target;
     const currentColor = colorPicker.getAttribute('data-current-color');
     // console.log(currentColor);
+    color = currentColor;
     canvas.freeDrawingBrush.color = currentColor;
+}
+
+const createRect = (event, canvas) => {
+    console.log('RECT');
+    const rect = new fabric.Rect({
+        width: 50,
+        height: 50,
+        fill: color,
+    });
+    canvas.add(rect);
+    canvas.renderAll();
+}
+
+const createCircle = (event, canvas) => {
+    const circle = new fabric.Circle({
+        radius: 20,
+        fill: color,
+    });
+    canvas.add(circle);
+    canvas.renderAll();
 }
 
 const canvas = initCanvas('canvas');

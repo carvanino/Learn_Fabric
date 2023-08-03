@@ -1,0 +1,19 @@
+div#objects {
+    background-color: blueviolet;
+    border: 3px seagreen solid;
+    margin-top: 12px;
+    border-radius: 9px;
+    width: 100px;
+    height: auto
+}
+
+p#objectTitle {
+    color: white;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 14px;
+    text-align: center;
+}
+
+button:hover {
+    background-color: seagreen;
+}

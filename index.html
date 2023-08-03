@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link type="stylesheet" href="index.css">
+    <link rel="stylesheet" href="index.css">
     <title>Document</title>
 </head>
 <body>
@@ -15,6 +15,11 @@
     <canvas id="canvas">
 
     </canvas>
+    <div id="objects">
+        <p id="objectTitle">Objects</p>
+        <button onclick="createRect(event, canvas)">Rect</button>
+        <button onclick="createCircle(event, canvas)">Circle</button>
+    </div>
 <script src="./lib/jscolor-2.5.1/jscolor.js"></script>
 <script src="./lib/unpkg.com_fabric@5.3.0_dist_fabric.min.js"></script>
 <script src="index.js"></script>
