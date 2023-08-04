@@ -6,7 +6,7 @@
 
 // fabric.Image.fromURL('https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg', (img) => {
 //     canvas.backgroundImage = img;
-//     canvas.renderAll();
+//     canvas.requestRenderAll();
 // })
 
 const initCanvas = (id) => {
@@ -21,7 +21,7 @@ const initCanvas = (id) => {
 const setBackground = (url, canvas) => {
     fabric.Image.fromURL(url, (img) => {
         canvas.backgroundImage = img;
-        canvas.renderAll();
+        canvas.requestRenderAll();
     });
 };
 
@@ -47,18 +47,18 @@ const createRect = (event, canvas) => {
         objectCaching: false
     });
     rect.animate('top', canvCenter.top, {
-        onChange: canvas.renderAll.bind(canvas)
+        onChange: canvas.requestRenderAll.bind(canvas)
     });
     rect.on('selected', () => {
         rect.fill = 'white';
-        canvas.renderAll();
+        canvas.requestRenderAll();
     });
     rect.on('deselected', () => {
         rect.fill = color;
-        canvas.renderAll();
+        canvas.requestRenderAll();
     });
     canvas.add(rect);
-    canvas.renderAll();
+    canvas.requestRenderAll();
 }
 
 const createCircle = (event, canvas) => {
@@ -71,10 +71,10 @@ const createCircle = (event, canvas) => {
         objectCaching: false
     });
     circle.animate('top', canvas.height, {
-        onChange: canvas.renderAll.bind(canvas),
+        onChange: canvas.requestRenderAll.bind(canvas),
         onComplete: () => {
             circle.animate('top', canvCenter.top, {
-                onChange: canvas.renderAll.bind(canvas),
+                onChange: canvas.requestRenderAll.bind(canvas),
                 easing: fabric.util.ease.easeOutBounce,
                 durartion: 200
             });
@@ -84,14 +84,14 @@ const createCircle = (event, canvas) => {
         circle.fill = 'white';
         // use set instead to still get the benefit of caching
         // circle.set('fill', 'white')
-        canvas.renderAll();
+        canvas.requestRenderAll();
     });
     circle.on('deselected', () => {
         circle.fill = color;
-        canvas.renderAll();
+        canvas.requestRenderAll();
     })
     canvas.add(circle);
-    canvas.renderAll();
+    canvas.requestRenderAll();
 }
 
 const groupObjects = (canvas, group, shouldGroup) => {
@@ -108,7 +108,7 @@ const groupObjects = (canvas, group, shouldGroup) => {
         canvas.remove(group.val);
         grouped.forEach((obj) => {
             canvas.add(obj);
-            canvas.renderAll();
+            canvas.requestRenderAll();
         })
         console.log(grouped);
 
@@ -165,7 +165,7 @@ const toggleModes = (event, mode) => {
             canvas.freeDrawingBrush.color = color;
             canvas.freeDrawingBrush.width = 20;
             canvas.isDrawingMode = true;
-            canvas.renderAll();
+            canvas.requestRenderAll();
             console.log('DRAW mode configuration');
             break;
         default:
@@ -201,7 +201,7 @@ const setPanEvent = (canvas) => {
         mousePressed = true;
         if (currentMode === modes.pan) {
             canvas.setCursor('grab');
-            canvas.renderAll();
+            canvas.requestRenderAll();
         }
     });
 
@@ -225,7 +225,7 @@ const restoreCanvas = (canvas, svgState, bgURL) => {
             console.log(objects);
             objects = objects.filter(o => o['xlink:href'] !== bgURL)
             // objects = objects.filter((ob) => {
-            //     console.log(ob)
+            //     // console.log(ob)
             //     if (ob.canvas.freeDrawingBrush.points) {
             //         group.val = new fabric.Group(ob);
             //         // canvas.add(group.val);
@@ -233,7 +233,7 @@ const restoreCanvas = (canvas, svgState, bgURL) => {
             //     }
             // })
             canvas.add(...objects);
-            canvas.renderAll();
+            canvas.requestRenderAll();
         })
     }
 }
@@ -251,7 +251,7 @@ reader.addEventListener('load',  () => {
     fabric.Image.fromURL(reader.result, img => {
         canvas.add(img);
         // console.log(img);
-        canvas.renderAll();
+        canvas.requestRenderAll();
     });
 });
-canvas.renderAll();
+canvas.requestRenderAll();
