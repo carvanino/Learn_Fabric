@@ -36,36 +36,98 @@ const setColorPicker = (event) => {
 
 const createRect = (event, canvas) => {
     console.log('RECT');
+    const canvCenter = canvas.getCenter();
+    console.log(canvCenter)
     const rect = new fabric.Rect({
         width: 50,
         height: 50,
+        top: 0,
+        left: canvCenter.left,
         fill: color,
+        objectCaching: false
+    });
+    rect.animate('top', canvCenter.top, {
+        onChange: canvas.renderAll.bind(canvas)
+    });
+    rect.on('selected', () => {
+        rect.fill = 'white';
+        canvas.renderAll();
+    });
+    rect.on('deselected', () => {
+        rect.fill = color;
+        canvas.renderAll();
     });
     canvas.add(rect);
     canvas.renderAll();
 }
 
 const createCircle = (event, canvas) => {
+    const canvCenter = canvas.getCenter();
     const circle = new fabric.Circle({
         radius: 20,
         fill: color,
+        left: canvCenter.left,
+        top: 0,
+        objectCaching: false
     });
+    circle.animate('top', canvas.height, {
+        onChange: canvas.renderAll.bind(canvas),
+        onComplete: () => {
+            circle.animate('top', canvCenter.top, {
+                onChange: canvas.renderAll.bind(canvas),
+                easing: fabric.util.ease.easeOutBounce,
+                durartion: 200
+            });
+        }
+    });
+    circle.on('selected', () => {
+        circle.fill = 'white';
+        // use set instead to still get the benefit of caching
+        // circle.set('fill', 'white')
+        canvas.renderAll();
+    });
+    circle.on('deselected', () => {
+        circle.fill = color;
+        canvas.renderAll();
+    })
     canvas.add(circle);
     canvas.renderAll();
 }
 
+const groupObjects = (canvas, group, shouldGroup) => {
+    if (shouldGroup) {
+        const objects = canvas.getObjects()
+        console.log(objects);
+        group.val = new fabric.Group(objects);
+        clearCanvas(canvas);
+        canvas.add(group.val);
+        console.log(group);
+    } else {
+        group.val.destroy()
+        const grouped = group.val.getObjects();
+        canvas.remove(group.val);
+        grouped.forEach((obj) => {
+            canvas.add(obj);
+            canvas.renderAll();
+        })
+        console.log(grouped);
+
+    }
+}
+
 const canvas = initCanvas('canvas');
 let mousePressed = false;
-const imgaeURL = 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg'
+const imageURL = 'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg'
 
 let color = '#000000';
-
+const group = {};
+const svgState = {};
 let currentMode;
 const modes = {
     pan: 'pan',
     draw: 'draw'
 }
-setBackground(imgaeURL, canvas);
+setBackground(imageURL, canvas);
 
 
 const toggleModes = (event, mode) => {
@@ -145,7 +207,9 @@ const setPanEvent = (canvas) => {
 
 }
 
-const clearCanvas = (event) => {
+const clearCanvas = (canvas) => {
+    svgState.val = canvas.toSVG()
+    console.log(svgState)
     canvas.getObjects().forEach((obj) => {
         if (obj !== canvas.backgroundImage) {
             canvas.remove(obj)
@@ -153,4 +217,41 @@ const clearCanvas = (event) => {
     })
 }
 
+const restoreCanvas = (canvas, svgState, bgURL) => {
+    if (svgState.val) {
+        // clearCanvas(canvas);
+        console.log(imageURL)
+        fabric.loadSVGFromString(svgState.val, (objects) => {
+            console.log(objects);
+            objects = objects.filter(o => o['xlink:href'] !== bgURL)
+            // objects = objects.filter((ob) => {
+            //     console.log(ob)
+            //     if (ob.canvas.freeDrawingBrush.points) {
+            //         group.val = new fabric.Group(ob);
+            //         // canvas.add(group.val);
+            //         return group.val;
+            //     }
+            // })
+            canvas.add(...objects);
+            canvas.renderAll();
+        })
+    }
+}
+const reader = new FileReader();
+const addImage = (e) => {
+    const inputElem = document.getElementById('imageUp');
+    const file = inputElem.files[0];
+    // console.log(file);
+    reader.readAsDataURL(file);
+}
+
+const uploadedImage = document.getElementById('imageUp');
+uploadedImage.addEventListener('change', addImage);
+reader.addEventListener('load',  () => {
+    fabric.Image.fromURL(reader.result, img => {
+        canvas.add(img);
+        // console.log(img);
+        canvas.renderAll();
+    });
+});
 canvas.renderAll();

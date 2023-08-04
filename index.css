@@ -13,6 +13,13 @@ p#objectTitle {
     font-size: 14px;
     text-align: center;
 }
+div > button {
+    margin: 1.5px auto;
+}
+button#group {
+    width: 100%;
+    
+}
 
 button:hover {
     background-color: seagreen;

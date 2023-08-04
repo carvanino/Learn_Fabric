@@ -9,8 +9,9 @@
 <body>
     <button id="pan"  class="modes" onclick="toggleModes(event, modes.pan)">Pan</button>
     <button id="draw" class="modes"  onclick="toggleModes(event, modes.draw)">Draw</button>
-    <button id="clear" class="modes"  onclick="clearCanvas(event)">Clear</button>
+    <button id="clear" class="modes"  onclick="clearCanvas(canvas)">Clear</button>
     <input id="colorPicker" value="#000000"  onchange="setColorPicker(event)" data-jscolor="{}">
+    <button onclick="restoreCanvas(canvas, svgState, imageURL)">Restore</button>
     
     <canvas id="canvas">
 
@@ -19,7 +20,15 @@
         <p id="objectTitle">Objects</p>
         <button onclick="createRect(event, canvas)">Rect</button>
         <button onclick="createCircle(event, canvas)">Circle</button>
+        <button id="group" onclick="groupObjects(canvas, group, true)">Group</button>
+        <button id="group" onclick="groupObjects(canvas, group, false )">Ungroup</button>
     </div>
+
+    <div class="imageholder">
+        <p class="buttonTitle"> Upload Image</p>
+        <input id="imageUp" type="file" accept="image/*">
+    </div>
+
 <script src="./lib/jscolor-2.5.1/jscolor.js"></script>
 <script src="./lib/unpkg.com_fabric@5.3.0_dist_fabric.min.js"></script>
 <script src="index.js"></script>
